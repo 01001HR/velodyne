@@ -40,6 +40,8 @@ namespace velodyne_pointcloud
                 uint32_t level);
     void processScan(const velodyne_msgs::VelodyneScan::ConstPtr &scanMsg);
 
+    void processScanVLP16(const velodyne_msgs::VelodyneScan::ConstPtr &scanMsg);
+
     ///Pointer to dynamic reconfigure service srv_
     boost::shared_ptr<dynamic_reconfigure::Server<velodyne_pointcloud::
       CloudNodeConfig> > srv_;

@@ -38,6 +38,9 @@ namespace velodyne_rawdata
   typedef velodyne_pointcloud::PointXYZIR VPoint;
   typedef pcl::PointCloud<VPoint> VPointCloud;
 
+  typedef velodyne_pointcloud::PointXYZIRT VTPoint;
+  typedef pcl::PointCloud<VTPoint> VTPointCloud;
+
   /**
    * Raw Velodyne packet constants and structures.
    */
@@ -176,6 +179,11 @@ namespace velodyne_rawdata
     /** add private function to handle the VLP16 **/ 
     void unpack_vlp16(const velodyne_msgs::VelodynePacket &pkt, VPointCloud &pc);
 
+  public:
+    /** add public function to organise the VLP16 **/
+    void unpack_vlp16(const velodyne_msgs::VelodynePacket &pkt, std::vector<VTPointCloud> &pc);
+
+  private:
     /** in-line test whether a point is in range */
     bool pointInRange(float range)
     {
