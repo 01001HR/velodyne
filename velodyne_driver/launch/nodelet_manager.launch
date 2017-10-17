@@ -15,11 +15,11 @@
   <arg name="rpm" default="600.0" />
 
   <!-- start nodelet manager -->
-  <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" />
+  <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" output="screen" />
 
   <!-- load driver nodelet into it -->
   <node pkg="nodelet" type="nodelet" name="$(arg manager)_driver"
-        args="load velodyne_driver/DriverNodelet $(arg manager)" >
+        args="load velodyne_driver/DriverNodelet $(arg manager)" output="screen">
     <param name="device_ip" value="$(arg device_ip)" />
     <param name="frame_id" value="$(arg frame_id)"/>
     <param name="model" value="$(arg model)"/>

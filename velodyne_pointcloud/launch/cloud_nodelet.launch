@@ -9,7 +9,7 @@
   <arg name="min_range" default="0.9" />
 
   <node pkg="nodelet" type="nodelet" name="$(arg manager)_cloud"
-        args="load velodyne_pointcloud/CloudNodelet $(arg manager)">
+        args="load velodyne_pointcloud/CloudNodelet $(arg manager)" output="screen">
     <param name="model" value="$(arg model)"/>
     <param name="calibration" value="$(arg calibration)"/>
     <param name="max_range" value="$(arg max_range)"/>

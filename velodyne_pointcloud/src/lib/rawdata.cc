@@ -662,6 +662,20 @@ namespace velodyne_rawdata
                 pcv[corrections.laser_ring].points.push_back(point);
                 //++pcv.width;
               }
+              else{
+                VTPoint point;
+                point.ring = corrections.laser_ring;
+                point.x = 0;
+                point.y = 0;
+                point.z = 0;
+                point.intensity = intensity;
+                point.time = time;
+
+                pcv[corrections.laser_ring].points.push_back(point);
+              }
+            }
+            else{
+              ROS_INFO("POINTS NOT IN ANGLE");
             }
           }
         }

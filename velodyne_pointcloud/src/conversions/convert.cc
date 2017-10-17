@@ -39,15 +39,19 @@ namespace velodyne_pointcloud
       CallbackType f;
       f = boost::bind (&Convert::callback, this, _1, _2);
       srv_->setCallback (f);
-
+      ROS_INFO("model:%s",model);
       // subscribe to VelodyneScan packets
       if(model == "VLP16"){
+          ROS_INFO("model16");
+
         velodyne_scan_ =
                 node.subscribe("velodyne_packets", 10,
                                &Convert::processScanVLP16, (Convert *) this,
                                ros::TransportHints().tcpNoDelay(true));
       }
       else{
+          ROS_INFO("model32");
+
         velodyne_scan_ =
                 node.subscribe("velodyne_packets", 10,
                                &Convert::processScan, (Convert *) this,
@@ -99,6 +103,17 @@ namespace velodyne_pointcloud
       velodyne_rawdata::VTPointCloud::Ptr
               outMsg(new velodyne_rawdata::VTPointCloud());
       std::vector<velodyne_rawdata::VTPointCloud> laserCloudScans(16);
+      // process each packet provided by the driver
+      for (size_t i = 0; i < scanMsg->packets.size(); ++i)
+      {
+        //data_->unpack(scanMsg->packets[i], *outMsg);
+        data_->unpack_vlp16(scanMsg->packets[i], laserCloudScans);
+
+      }
+
+      for (int i = 0; i < 16; i++) {
+        *outMsg += laserCloudScans[i];
+      }
 
       // outMsg's header is a pcl::PCLHeader, convert it before stamp assignment
       outMsg->header.stamp = pcl_conversions::toPCL(scanMsg->header).stamp;
@@ -106,21 +121,11 @@ namespace velodyne_pointcloud
       outMsg->height = 16;
       outMsg->width = scanMsg->packets.size() * 12 * 2;
 
-      // process each packet provided by the driver
-      for (size_t i = 0; i < scanMsg->packets.size(); ++i)
-      {
-        //data_->unpack(scanMsg->packets[i], *outMsg);
-        data_->unpack_vlp16(scanMsg->packets[i], laserCloudScans);
-      }
-
-      for (int i = 0; i < 16; i++) {
-        *outMsg += laserCloudScans[i];
-      }
-
       // publish the accumulated cloud message
       ROS_DEBUG_STREAM("Publishing " << outMsg->height * outMsg->width
                                      << " Velodyne points, time: " << outMsg->header.stamp);
       output_.publish(outMsg);
+      ROS_INFO("size:%d,height:%d,width:%d",outMsg->points.size(),outMsg->height,outMsg->width);
     }
 
 } // namespace velodyne_pointcloud

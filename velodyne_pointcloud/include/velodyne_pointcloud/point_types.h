@@ -57,7 +57,7 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(velodyne_pointcloud::PointXYZIRT,
                                   (float, z, z)
                                   (float, intensity, intensity)
                                   (uint16_t, ring, ring)
-                                  (uint16_t, time, time))
+                                  (double, time, time))
 
 #endif // __VELODYNE_POINTCLOUD_POINT_TYPES_H
 
