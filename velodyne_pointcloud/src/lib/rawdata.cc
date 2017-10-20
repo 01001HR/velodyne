@@ -494,6 +494,8 @@ namespace velodyne_rawdata
     void RawData::unpack_vlp16(const velodyne_msgs::VelodynePacket &pkt,
                                std::vector<VTPointCloud> &pcv)
     {
+      //ROS_INFO_STREAM("Received packet, time: " << pkt.stamp);
+
       float azimuth;
       float azimuth_diff;
       float last_azimuth_diff=0;
@@ -502,7 +504,7 @@ namespace velodyne_rawdata
       float x, y, z;
       float intensity;
       double time = pkt.stamp.toSec();
-
+      //printf("dtime:%12.12f \n",time);
       const raw_packet_t *raw = (const raw_packet_t *) &pkt.data[0];
 
       for (int block = 0; block < BLOCKS_PER_PACKET; block++) {
@@ -539,7 +541,8 @@ namespace velodyne_rawdata
             /** correct for the laser rotation as a function of timing during the firings **/
             azimuth_corrected_f = azimuth + (azimuth_diff * ((dsr*VLP16_DSR_TOFFSET) + (firing*VLP16_FIRING_TOFFSET)) / VLP16_BLOCK_TDURATION);
             azimuth_corrected = ((int)round(azimuth_corrected_f)) % 36000;
-            time = pkt.stamp.toSec() + ((dsr*VLP16_DSR_TOFFSET) + (firing*VLP16_FIRING_TOFFSET) + block*VLP16_BLOCK_TDURATION) * 1000000;
+            time = pkt.stamp.toSec() + double((dsr*VLP16_DSR_TOFFSET) + (firing*VLP16_FIRING_TOFFSET) + block*VLP16_BLOCK_TDURATION) / 1000000.0;
+            //printf(" %12.12f ",time);
 
             /*condition added to avoid calculating points which are not
               in the interesting defined area (min_angle < area < max_angle)*/
